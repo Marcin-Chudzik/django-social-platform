@@ -104,11 +104,17 @@ celerybeat.pid
 # Environments
 .env
 .venv
+.platform_venv
+.laptop
 env/
 venv/
 ENV/
+platform_venv/
+laptop/
 env.bak/
 venv.bak/
+platform_venv.bak/
+laptop.bak/
 
 # Spyder project settings
 .spyderproject
@@ -127,3 +133,4 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+.idea/
