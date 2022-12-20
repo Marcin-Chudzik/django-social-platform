@@ -1,5 +1,8 @@
 # Social platform
 
+Project was separated from other repository which contains too many projects.<br>
+That's why is only few commits here. Please don't think i copy or steal it.
+
 This app is a simple example of a social platform, built in Python/Django.
 Main functionalities in the project:
 - register and login by django forms.
