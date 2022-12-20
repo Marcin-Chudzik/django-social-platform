@@ -1,0 +1,63 @@
+{% load static %}
+
+<nav class="navbar">
+  <div class="container">
+    <span class="service service--top">
+      <img src="{% static 'bookmarks/img/icon-black.png' %}" alt="icon">
+      <h1>weeby</h1>
+    </span>
+    {% if request.user.is_authenticated %}
+    <div class="navbar__links">
+      <a href="{% url 'dashboard' %}" id="dashboard">Dashboard</a>
+      <a href="{% url 'images:list' %}" id="images">Gallery</a>
+      <a href="{% url 'user_list' %}" id="people">People</a>
+    </div>
+    {% endif %}
+    <span class="navbar__welcome">
+      Welcome! {{ request.user.first_name }},
+      <a href="{% url 'logout' %}">Logout</a>
+      <img onclick="moveItems()" class="btn--icon" src="{% static 'bookmarks/img/settings.png' %}" alt="settings">
+    </span>
+    {% if user.profile %}
+    <span class="aside__items">
+      <a href="{% url 'edit' %}" class="btn btn--blue" id="item-1">Profile edit</a>
+      <a href="{% url 'password_change' %}" class="btn btn--blue" id="item-2">Password change</a>
+      <a class="btn btn--blue" id="item-3" onclick="openBookmarkletModal()">Bookmarklet</a>
+    </span>
+    {% endif %}
+  </div>
+</nav>
+<div class="modal" id="modalBookmarklet">
+  <div class="container">
+    <div class="modal__top">
+      <h2>Bookmarklet</h2>
+      <span class="modal__close" onclick="closeBookmarkletModal()">&times;</span>
+    </div>
+    <div class="modal__content">
+      <p>Drag the button below to the Favorites bar in the browser.
+      This will allow you to add photos from other websites.</p>
+      <a href="javascript:{% include 'js/bookmarkletLauncher.js' %}" class="btn btn--yellow">Add image</a>
+    </div>
+  </div>
+</div>
+<input type="hidden" id="section" value="{{ section }}">
+<script>
+// Mapping all items contains an "item" in element id to list.
+const moveItems = () => {
+  const listOfItems = Array.from(document.querySelectorAll('[id^="item"]'));
+  for (item of listOfItems) {
+    if (item.style.right === '180px') {
+      item.style.right = '-160px';
+    } else {
+      item.style.right = '180px';
+    }
+  }
+};
+</script>
+<script>
+  let bookmarkletModal = document.getElementById("modalBookmarklet");
+  // Open and close bookmarklet modal.
+  const openBookmarkletModal = () => bookmarkletModal.style.display = 'block';
+  const closeBookmarkletModal = () => bookmarkletModal.style.display = 'none';
+</script>
+<script src="{% static 'bookmarks/js/dashboardActiveLink.js' %}"></script>

@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="create">
+  <h1>Add image</h1>
+  <div class="container">
+    <div class="create__image">
+      <img src="{{ request.GET.url }}" alt="image">
+    </div>
+    <div class="create__info">
+      <div class="create__form">
+        <form action="." method="POST">
+          {% for field in image_form %}
+          <div class="form__pair">
+            <label class="label">{{ field.label }}</label>
+            <span>{{ field }}</span>
+          </div>
+          {% endfor %}
+          {% csrf_token %}
+          <button class="btn btn--yellow" type="submit">Add</button>
+        </form>
+      </div>
+      <div class="panel__hints">
+        <h2>Hints</h2>
+        <ul class="hints-list">
+          <li><p>Extension of linked image must be .JPG or .JPEG</p></li>
+          <li><p>Title cannot be longer then 200 chars.</p></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content %}

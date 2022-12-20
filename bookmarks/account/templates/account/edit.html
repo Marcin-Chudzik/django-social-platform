@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<main class="edit">
+  <div class="edit__top">
+    <h2>Profile details</h2>
+    <p>You can change your profile details here.</p>
+  </div>
+  <form class="edit__form" action="." method="POST" enctype="multipart/form-data">
+    <div class="edit__form__photo">
+      <img src="{{ user.profile.photo.url }}" alt="photo">
+      {{ profile_form.photo }}
+      <span>
+        <button class="btn" type="submit" name="default" value="default">Default</button>
+        <label>Set default photo</label>
+      </span>
+    </div>
+    <div>
+      {% for field in user_form %}
+      <div class="form__pair">
+        <label class="label">{{ field.label }}</label>
+        <span>{{ field }}</span>
+      </div>
+      {% endfor %}
+      <div class="form__pair">
+        <label class="label">{{ profile_form.date_of_birth.label }}</label>
+        <span>{{ profile_form.date_of_birth }}</span>
+      </div>
+      <button type="submit" class="btn">Save</button>
+    </div>
+    {% csrf_token %}
+  </form>
+</main>
+{% endblock content %}

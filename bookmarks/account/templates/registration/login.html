@@ -1,0 +1,77 @@
+{% extends "base_no_nav.html" %}
+{% load static %}
+
+{% block content %}
+  <div class="container container--center">
+    <div class="panel__overlay" id="overlay"></div>
+    <div class="overlay overlay--login" id="overlayLogin">
+      <p>You have your account already?</p>
+      <button type="button" class="btn btn--yellow" id="btnOverlayLogin" onclick="displayLoginForm()">
+        Login
+      </button>
+    </div>
+    <div class="overlay" id="overlayRegister">
+      <p>No account yet? Click below!</p>
+      <button type="button" class="btn btn--yellow" id="btnOverlayRegister" onclick="displayRegisterForm()">
+        Register
+      </button>
+    </div>
+    <div class="panel" id="panel">
+      <div class="panel__form" id="login">
+        <h2>Login</h2>
+        {% if login_form.errors %}
+          {% for field in login_form %}
+            {% for error in field.errors %}
+              <p class="form__errors">{{ error }}.</p>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+        <form action="{% url 'login' %}" method="POST">
+          {% for field in login_form %}
+          <div class="form__pair">
+            <label class="label">{{ field.label }}</label>
+            <span>{{ field }}</span>
+          </div>
+          {% endfor %}
+          <input type="hidden" name="next" value="{{ next }}">
+          <a href="{% url 'password_reset' %}">Forgot password?</a>
+          <button type="submit" class="btn">Login</button>
+          {% csrf_token %}
+        </form>
+        <div class="panel__socials">
+          <p>Login with social account</p>
+          <div class="container">
+            <a href="{% url 'social:begin' 'facebook' %}">
+              <img class="btn--social" src="{% static 'bookmarks/img/facebook.png' %}" alt="facebook">
+            </a>
+            <a href="{% url 'social:begin' 'google-oauth2' %}">
+              <img class="btn--social" src="{% static 'bookmarks/img/google.png' %}" alt="google">
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="panel__form" id="register">
+        <h2>Register</h2>
+        {% if register_form.errors %}
+          {% for field in registration_form %}
+            {% for error in field.errors %}
+              <p class="form__errors">{{ error }}.</p>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
+        <form action="." method="POST">
+          {% for field in registration_form %}
+          <div class="form__pair">
+            <label class="label">{{ field.label }}</label>
+            <span>{{ field }}</span>
+          </div>
+          {% endfor %}
+          <input type="hidden" name="next" value="{{ next }}">
+          <button type="submit" class="btn">Register</button>
+          {% csrf_token %}
+        </form>
+      </div>
+    </div>
+  </div>
+<script src="{% static 'bookmarks/js/overlay.js' %}"></script>
+{% endblock %}

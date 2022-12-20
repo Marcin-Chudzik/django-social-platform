@@ -1,0 +1,39 @@
+{% load thumbnail %}
+{% load static %}
+
+{% for image in images %}
+<h2>{{ image.title }}</h2>
+<div class="image__container">
+  <div class="image">
+    <a href="{{ image.get_absolute_url }}">
+      {% thumbnail image.image 500x0 crop="100%" as im %}
+      <a href="{{ image.get_absolute_url }}">
+        <img src="{{ im.url }}" alt="image">
+      </a>
+    </a>
+  </div>
+  <div class="image__info">
+      <div class="image-description">{{ image.description }}</div>
+      {% with total_likes=image.users_like.count users_like=image.users_like.all %}
+      <div class="image-stats">
+        <div>
+          <span class="image-stats__likes">
+            <span>{{ total_likes }}</span>like{{ total_likes|pluralize:"s" }}
+          </span>
+        </div>
+
+        <div class="users__likes">
+          {% for user in users_like %}
+          <div class="user-like">
+            <img src="{{ user.profile.photo.url }}" alt="profile">
+            <h2>{{ user.first_name }}</h2>
+          </div>
+          {% empty %}
+          <h2>No likes yet</h2>
+          {% endfor %}
+        </div>
+      </div>
+      {% endwith %}
+  </div>
+</div>
+{% endfor %}

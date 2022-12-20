@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="images">
+  <div class="images__list">
+    {% include 'images/image/list_ajax.html' %}
+  </div>
+</section>
+{% endblock content %}
+
+{% block domready %}
+<!-- Actual page number. -->
+var page = 1;
+<!-- If actual page is a last page. -->
+var empty_page = false;
+<!-- Block additional requests if one is already in process. -->
+var block_request = false;
+<!-- Checking users scrolling. -->
+$(window).scroll(function () {
+  var margin = $(document).height() - $(window).height() - 200;
+<!-- Loading next portion of data only if actual page is not last one and any AJAX request is not in process. -->
+  if ($(window).scrollTop() > margin && empty_page === false && block_request === false) {
+    block_request = true;
+    page += 1;
+    $.get('?page=' + page, function (data) {
+<!-- Data is empty, because user scroll all images.  -->
+      if (data === '') {
+        empty_page = true;
+      }
+<!-- Loading new portion of images to display. -->
+      else {
+        block_request = false;
+        $('div .images__list').append(data);
+      }
+    });
+  }
+});
+{% endblock %}

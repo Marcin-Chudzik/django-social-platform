@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+
+
+{% block content %}
+<section class="people">
+  <div class="people__list" id="peopleList">
+    {% for user in users %}
+    <div class="user" onmouseover="checkProfileIn({{ user.id }})" onmouseout="checkProfileOut({{ user.id }})">
+      <a href="{{ user.get_absolute_url }}">
+        {% thumbnail user.profile.photo "100x100" crop="100%" as im %}
+        <img src="{{ im.url }}" alt="photo">
+      </a>
+      <a href="{{ user.get_absolute_url }}">
+        <h2 id="name-{{ user.id }}">{{ user.get_full_name }}</h2>
+        <span id="checkProfileBtn-{{ user.id }}" class="btn">Check profile</span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<script>
+  const checkProfileIn = id => {
+    document.getElementById(`name-${id}`).style.display = 'none';
+    document.getElementById(`checkProfileBtn-${id}`).style.display = 'block';
+  };
+  const checkProfileOut = id => {
+    document.getElementById(`name-${id}`).style.display = 'block';
+    document.getElementById(`checkProfileBtn-${id}`).style.display = 'none';
+  };
+</script>
+{% endblock content %}

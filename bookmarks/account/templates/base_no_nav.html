@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="{% static 'bookmarks/css/stylesheet.css' %}">
+  <link rel="icon" href="{% static 'bookmarks/img/favicon.ico' %}">
+  <title>Tweeby</title>
+</head>
+<body>
+  <div class="content content--no-nav">
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li class="message message--{{ message.tags }}" id="message-{{ forloop.counter }}">
+          <img src="{% static 'bookmarks/img/info.png' %}" alt="info">
+          <h3>{{ message|safe }}</h3>
+          <button  class="btn btn--icon" id="close-{{ forloop.counter}}"
+                   onclick="removeHTMLElement(document.getElementById('message-{{ forloop.counter }}'))">
+            &times;</button>
+        </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div class="navbar--not">
+      <span class="service">
+        <img src="{% static 'bookmarks/img/icon-black.png' %}" alt="icon">
+        <h1>weeby</h1>
+      </span>
+      {% if not login_form %}
+      <a href="{% url 'login' %}">Login</a>
+      {% endif %}
+    </div>
+    {% block content %}
+    {% endblock content %}
+  </div>
+  {% include "footer.html" %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.min.js"></script>
+<script>
+  var csrftoken = Cookies.get('csrftoken');
+  function csrfSafeMethod(method) {
+    // These methods do not require security from CSRF kind attacks.
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+  }
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      }
+    }
+  });
+  $(document).ready(function () {
+    {% block domready %}
+    {% endblock %}
+  });
+</script>
+<script>
+  // Remove a HTML element from DOM.
+  const removeHTMLElement = element => element.remove();
+</script>
+</body>
+</html>

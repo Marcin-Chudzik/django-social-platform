@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% load thumbnail %}
+
+
+{% block content %}
+<section class="profile container">
+  <h1 class="profile-details__full-name">{{ user.get_full_name }}</h1>
+  <div></div>
+  <div class="profile-details">
+    {% thumbnail user.profile.photo "180x180" crop="100%" as im %}
+    <img src="{{ im.url }}" class="profile-details__photo" alt="photo">
+    <div></div>
+    <div class="profile-details__info">
+      <span class="profile-details__followers">
+        {% with total_followers=user.followers.count %}
+        <span class="total-followers">
+          <span id="totalFollowersCounter">{{ total_followers }}</span>
+          <span>follower{{ total_followers|pluralize:"s" }}</span>
+        </span>
+        {% if request.user != user %}
+        <span class="btn--follow">
+          <img src="{% static 'bookmarks/img/follow.png' %}" alt="follow-icon">
+          <a id="followButton" href="#" data-id="{{ user.id }}"
+            data-action="{% if request.user in user.followers.all %}un{% endif %}follow" class="follow">
+            {% if request.user not in user.followers.all %}
+            follow
+            {% else %}
+            unfollow
+            {% endif %}
+          </a>
+        </span>
+        {% endif %}
+      </span>
+      <hr>
+      <div class="images__list">
+        {% include "images/image/list_ajax.html" with images=user.images_created.all %}
+      </div>
+      {% endwith %}
+    </div>
+  </div>
+</section>
+{% endblock content %}
+
+{% block domready %}
+  const btnFollow = $('#followButton');
+  btnFollow.click(element => {
+    element.preventDefault();
+    $.post('{% url "user_follow" %}',
+    {
+      id: $(btnFollow).data('id'),
+      action: $(btnFollow).data('action')
+    },
+      data => {
+      if (data['status'] === 'ok') {
+        let previousAction = btnFollow.data('action');
+
+        // Change a data-action attribute value.
+        btnFollow.data('action',
+          previousAction === 'follow' ? 'unfollow' : 'follow');
+        // Change an anchor displayed inner text.
+        btnFollow.text(previousAction === 'follow' ? 'unfollow' : 'follow');
+
+        // Updating a profile followers counter.
+        let followersCounter = $('#totalFollowersCounter');
+        let previousFollowers = parseInt(followersCounter.text());
+        followersCounter.text(previousAction === 'follow' ? previousFollowers + 1 : previousFollowers - 1);
+        }
+      }
+    );
+  });
+{% endblock domready %}

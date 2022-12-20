@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="detail">
+  <h1>{{ image.title }}</h1>
+  <div class="container">
+    <div class="detail__image">
+      {% load thumbnail %}
+      <a href="{{ image.image.url }}">
+        <img src="{% thumbnail image.image 500x0 %}" alt="image">
+      </a>
+    </div>
+    <div class="detail__info">
+      <div class="image-description">{{ image.description }}</div>
+      {% with total_likes=image.users_like.count users_like=image.users_like.all %}
+      <div class="image-stats">
+        <div>
+          <span class="image-stats__likes">
+            <span>{{ total_likes }}</span>like{{ total_likes|pluralize:"s" }}
+          </span>
+          <span class="btn--like">
+            <img class="liked" src="{% static 'bookmarks/img/like.png' %}" alt="like">
+            <a href="#" data-id="{{ image.id }}" data-action="{% if request.user in users_like %}un{% endif %}like"
+               id="like" class="like">
+              {% if request.user not in users_like %}
+              Like
+              {% else %}
+              Unlike
+              {% endif %}
+            </a>
+          </span>
+        </div>
+
+        <div class="users__likes">
+          {% for user in users_like %}
+          <div class="user-like">
+            <img src="{{ user.profile.photo.url }}" alt="profile">
+            <h2>{{ user.first_name }}</h2>
+          </div>
+          {% empty %}
+          <h2>No likes yet</h2>
+          {% endfor %}
+        </div>
+      </div>
+      {% endwith %}
+    </div>
+  </div>
+</section>
+<script src="{% static 'bookmarks/js/like.js' %}"></script>
+{% endblock %}
+{% block domready %}
+  $('a.like').click(function(e){
+    e.preventDefault();
+    $.post('{% url "images:like" %}',
+      {
+        id: $(this).data('id'),
+        action: $(this).data('action')
+      },
+      function (data) {
+        if (data['status'] == 'ok')
+        {
+          var previous_action = $('a.like').data('action');
+
+          // Change a value of attr. data-action
+          $('a.like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+          // Changing a value displayed as anchor element.
+          $('a.like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+          // Updating a likes counter.
+          var previous_likes = parseInt($('span.image-stats__likes span').text());
+          $('span.image-stats__likes span').text(previous_action == 'like' ? previous_likes + 1: previous_likes - 1)
+        }
+      }
+    );
+  });
+{% endblock %}
