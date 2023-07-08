@@ -1,6 +1,7 @@
 # Social platform
 
-This app is a simple example of a social platform, built in Python/Django.
+The service has a sign up/in system, and profiles are editable. There is also an option to sign in with a Google or Facebook account. The main functionality of the app is to publish photos with descriptions that other users can like. We can observe another user, so the built-in notification system will notify us when the observed user publishes a new photo or likes another photo. The app has a saveable bookmark, so we can quickly share a photo from another site.
+
 Main functionalities in the project:
 - register and login by django forms.
 - login by using Facebook or Google account (only with runserver_plus).
@@ -11,7 +12,6 @@ Main functionalities in the project:
 - resetting and changing an account password.
 - bookmarklet which we can save in our Internet browser and use on any website to immediately publish a new image.
 - liking an images.
-
 
 ## How to run
 
