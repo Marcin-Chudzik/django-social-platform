@@ -3,8 +3,6 @@ from django.contrib.auth.models import User
 
 class EmailAuthBackend(object):
     def authenticate(self, request, username=None, password=None):
-        # User authentication based on email address.
-        # I left username as argument to instead of email, to make it more compatibility with auth framework views.
         try:
             user = User.objects.get(email=username)
             if user.check_password(password):

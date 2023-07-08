@@ -4,14 +4,20 @@ from .models import Profile
 
 
 class LoginForm(forms.Form):
-    l_username = forms.CharField(label='Username or Email', max_length=50, required=True, widget=forms.TextInput())
-    l_password = forms.CharField(label='Password', required=True, widget=forms.PasswordInput())
+    l_username = forms.CharField(
+        label='Username or Email', max_length=50, required=True,
+        widget=forms.TextInput())
+    l_password = forms.CharField(
+        label='Password', required=True, widget=forms.PasswordInput())
 
 
 class UserRegistrationForm(forms.ModelForm):
-    r_password = forms.CharField(label='Password', required=True, widget=forms.PasswordInput())
-    r_password2 = forms.CharField(label='Confirm password', required=True, widget=forms.PasswordInput())
-    r_username = forms.CharField(label='Username', max_length=50, widget=forms.TextInput())
+    r_password = forms.CharField(
+        label='Password', required=True, widget=forms.PasswordInput())
+    r_password2 = forms.CharField(
+        label='Confirm password', required=True, widget=forms.PasswordInput())
+    r_username = forms.CharField(
+        label='Username', max_length=50, widget=forms.TextInput())
 
     class Meta:
         model = User
@@ -36,4 +42,5 @@ class ProfileEditForm(forms.ModelForm):
         fields = ('date_of_birth', 'photo')
 
     photo = forms.ImageField(label='', widget=forms.FileInput())
-    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD'}))
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'placeholder': 'YYYY-MM-DD'}))

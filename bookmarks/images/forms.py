@@ -18,13 +18,16 @@ class ImageCreateForm(forms.ModelForm):
         valid_extensions = ['jpg', 'jpeg']
         extension = url.rsplit('.', 1)[1].lower()
         if extension not in valid_extensions:
-            raise forms.ValidationError('The URL provided contains a file in the wrong format (.JPG or .JPEG).')
+            raise forms.ValidationError(
+                'The URL provided contains a file \
+                 in the wrong format (.JPG or .JPEG).')
         return url
 
     def save(self, commit=True, force_insert=False, force_update=False):
         image = super(ImageCreateForm, self).save(commit=False)
         image_url = self.cleaned_data['url']
-        image_name = f"{slugify(image.title)}.{image_url.rsplit('.', 1)[1].lower()}"
+        image_name = f"{slugify(image.title)}." \
+                     f"{image_url.rsplit('.', 1)[1].lower()}"
 
         # Downloading image from url
         req = Request(image_url, headers={"User-Agent": "Mozilla/5.0"})

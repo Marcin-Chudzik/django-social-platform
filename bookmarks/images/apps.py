@@ -6,5 +6,4 @@ class ImagesConfig(AppConfig):
     name = 'images'
 
     def ready(self):
-        # Importing the signals servicing procedures.
-        import images.signals
+        import images.signals  # noqa
