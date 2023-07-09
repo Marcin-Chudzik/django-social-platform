@@ -1,12 +1,6 @@
 """
 Tests for Django models.
 """
-from django.test import TestCase
-
-from django.contrib.contenttypes.models import ContentType
-
-from django.utils.text import slugify
-
 from bookmarks.common.utils import (
     create_user,
     create_profile,
@@ -14,6 +8,9 @@ from bookmarks.common.utils import (
     create_image,
     create_action,
 )
+from django.contrib.contenttypes.models import ContentType
+from django.test import TestCase
+from django.utils.text import slugify
 
 
 class ModelTests(TestCase):
@@ -63,7 +60,8 @@ class ModelTests(TestCase):
         profile = create_profile(**payload)
 
         self.assertEqual(profile.user, payload['user'])
-        self.assertEqual(str(profile), f"User profile {payload['user'].username}")
+        self.assertEqual(
+            str(profile), f"User profile {payload['user'].username}")
         for key, value in payload.items():
             self.assertEqual(getattr(profile, key), value)
 

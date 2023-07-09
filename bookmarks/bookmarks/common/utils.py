@@ -1,21 +1,18 @@
 """
 Util functionalities.
 """
-from django.contrib.contenttypes.models import ContentType
+from account.models import (
+    Profile,
+    Contact,
+)
+from actions.models import Action
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import (
     User,
     BaseUserManager,
 )
-
-from django.utils.text import slugify
-
-from account.models import (
-    Profile,
-    Contact,
-)
+from django.contrib.contenttypes.models import ContentType
 from images.models import Image
-from actions.models import Action
 
 
 def is_ajax(request):
