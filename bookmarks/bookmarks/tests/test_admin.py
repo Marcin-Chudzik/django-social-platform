@@ -1,19 +1,18 @@
 """
 Tests for Django admin site pages.
 """
-from django.test import (
-    TestCase,
-    Client,
-)
-from django.urls import reverse
-from django.contrib import admin
-
 from bookmarks.common.utils import (
     create_user,
     create_profile,
     create_image,
     create_action,
 )
+from django.contrib import admin
+from django.test import (
+    TestCase,
+    Client,
+)
+from django.urls import reverse
 
 
 class AdminSiteTests(TestCase):

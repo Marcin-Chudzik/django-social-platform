@@ -1,13 +1,18 @@
 """
 Util functionalities.
 """
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-
-from account.models import Profile
-from images.models import Image
+from account.models import (
+    Profile,
+    Contact,
+)
 from actions.models import Action
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import (
+    User,
+    BaseUserManager,
+)
+from django.contrib.contenttypes.models import ContentType
+from images.models import Image
 
 
 def is_ajax(request):
@@ -19,14 +24,19 @@ def create_user(password: str = 'sample123', superuser: bool = False,
     """Create and return a User."""
     last_user = get_user_model().objects.last()
     new_user_id = 1 if not last_user else last_user.id + 1
-    email = f'test{new_user_id}@example.com'
+    email = extra_fields.pop('email', f'test{new_user_id}@example.com')
+    email = BaseUserManager.normalize_email(email)
+
+    if not email:
+        raise ValueError('User must have an email address.')
 
     new_user = get_user_model().objects.create(
-        email=extra_fields.pop('email', email),
+        email=email,
         username=extra_fields.pop('username', email),
-        password=password,
         **extra_fields
     )
+    new_user.set_password(password)
+
     if superuser:
         new_user.is_staff = True
         new_user.is_superuser = True
@@ -49,6 +59,15 @@ def create_profile(user: User = create_user(),
     return new_profile
 
 
+def create_contact(user_from: User = create_user(),
+                   user_to: User = create_user()) -> Contact:
+    new_contact = Contact.objects.create(
+        user_from=user_from,
+        user_to=user_to,
+    )
+    return new_contact
+
+
 def create_image(user: User = create_user(), title: str = 'TestTitle',
                  image: str = 'user.png', description: str = 'TestDesc',
                  **extra_fields) -> Image:
@@ -61,15 +80,17 @@ def create_image(user: User = create_user(), title: str = 'TestTitle',
         **extra_fields
     )
     new_image.url = new_image.get_absolute_url()
+
     return new_image
 
 
 def create_action(user: User = create_user(), verb: str = 'added',
-                  target_obj: object = None) -> Action:
-    if not target_obj:
-        target_obj = create_image(user=user)
+                  target: object = None) -> Action:
+    if not target:
+        target = create_image(user=user)
 
-    target_ct = ContentType.objects.get_for_model(target_obj)
+    target_ct = ContentType.objects.get_for_model(target)
     action = Action(user=user, verb=verb, target=target_ct)
     action.save()
+
     return action
